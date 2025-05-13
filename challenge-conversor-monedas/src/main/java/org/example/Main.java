@@ -2,10 +2,11 @@ package org.example;
 
 import com.google.gson.Gson;
 import org.example.api.ApiClient;
-import org.example.model.ExchangeRateResponse;
+import org.example.model.*;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,10 +19,11 @@ public class Main {
             Gson gson = new Gson();
             ExchangeRateResponse data = gson.fromJson(json, ExchangeRateResponse.class);
 
-            System.out.println("Moneda base: " + data.getBase_code());
-            System.out.println("Tasa ARS: " + data.getConversion_rates().get("ARS"));
-            System.out.println("Tasa BRL: " + data.getConversion_rates().get("BRL"));
-            System.out.println("Tasa CLP: " + data.getConversion_rates().get("CLP"));
+            List<Moneda> monedas = FiltroMonedas.filtrarMonedas(data.getConversion_rates());
+
+            // Iniciar menú interactivo
+            Menu menu = new Menu(monedas);
+            menu.mostrarMenu();
 
         } catch (IOException | InterruptedException e) {
             System.out.println("Error al obtener datos de la API: " + e.getMessage());
